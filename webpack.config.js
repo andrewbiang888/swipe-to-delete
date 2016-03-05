@@ -6,14 +6,14 @@ const ENV = process.env.NODE_ENV || 'build';
 
 let config = {
 	entry: {
-		swipeToDelete: path.resolve(__dirname, 'src/js/main')
+		SwipeToDelete: path.resolve(__dirname, 'src/js/main')
 	},
 
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		library: '[name]',
 		libraryTarget: 'umd',
-		filename: '[name].js'
+		filename: 'swipe-to-delete.js'
 	},
 
 	resolve: {
@@ -21,16 +21,14 @@ let config = {
 		extensions: ['', '.js']
 	},
 
-/*
 	externals: {
 		'backbone.marionette': {
-			root: 'Backbone.Marionette',
+			root: 'Marionette',
 			commonjs: 'backbone.marionette',
 			commonjs2: 'backbone.marionette',
 			amd: 'backbone.marionette'
 		}
 	},
-*/
 
 	module: {
 		loaders: [
@@ -45,6 +43,7 @@ let config = {
 
 if (ENV === 'develop') {
 	Object.assign(config, {
+		devtool: '#inline-source-map',
 		devServer: {
 			host: 'localhost',
 			port: 8080,

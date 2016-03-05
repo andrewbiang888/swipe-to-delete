@@ -1,3 +1,8 @@
-import Marionette from 'backbone.marionette/lib/backbone.marionette';
+import Marionette from 'backbone.marionette';
 
-console.info('dev!', Marionette);
+export default class SwipeToDelete extends Marionette.Behavior {
+	initialize(options) {
+		console.info('init', options);
+
+	}
+}
