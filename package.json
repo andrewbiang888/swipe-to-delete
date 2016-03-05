@@ -1,0 +1,19 @@
+{
+  "name": "swipe-to-delete",
+  "version": "0.1.0",
+  "description": "Implement the \"swipe to delete\" UI-pattern in the Marionette framework.",
+  "main": "src/js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "swipe",
+    "UI-pattern",
+    "marionette",
+    "behaviors",
+    "backbone",
+    "backbone.marionette"
+  ],
+  "author": "Fedotov Alexander",
+  "license": "MIT"
+}
