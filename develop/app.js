@@ -16,6 +16,8 @@ var messages = new Messages([
 
 /* View */
 var MessageView = Backbone.Marionette.ItemView.extend({
+	tagName: 'a',
+	className: 'list-group-item',
 	template: _.template('\
 			<h4 class="list-group-item-heading"><%= date %></h4>\
 			<p class="list-group-item-text"><%= text %></p>\
@@ -26,8 +28,6 @@ var MessagesView = Backbone.Marionette.CollectionView.extend({
 	childView: SwipeToDeleteView.default,
 	childViewOptions: function () {
 		return {
-			tagName: 'a',
-			className: 'list-group-item',
 			View: MessageView
 		};
 	}

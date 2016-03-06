@@ -1,0 +1,30 @@
+/* Required styles */
+.swipe-to-delete {
+	position: relative !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+}
+.swipe-to-delete .js-delete {
+	position: absolute !important;
+	top: 0 !important;
+	right: 0 !important;
+	bottom: 0 !important;
+	left: 0 !important;
+	z-index: 1 !important;
+}
+.swipe-to-delete .js-content {
+	position: relative !important;
+	z-index: 2 !important;
+}
+
+/* Custom styles */
+.swipe-to-delete .js-delete {
+	background: red;
+	padding: 10px 15px;
+}
+.swipe-to-delete .js-content {
+	background: #fff;
+}
+.swipe-to-delete .js-content .list-group-item:last-child {
+	border-width: 1px 0;
+}
