@@ -11,9 +11,9 @@
   },
   "keywords": [
     "swipe",
+    "delete",
     "UI-pattern",
     "marionette",
-    "behaviors",
     "backbone",
     "backbone.marionette"
   ],

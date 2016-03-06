@@ -6,7 +6,7 @@ const ENV = process.env.NODE_ENV || 'build';
 
 let config = {
 	entry: {
-		SwipeToDelete: path.resolve(__dirname, 'src/js/main')
+		SwipeToDeleteView: path.resolve(__dirname, 'src/js/main')
 	},
 
 	output: {
@@ -22,6 +22,12 @@ let config = {
 	},
 
 	externals: {
+		'underscore': {
+			root: '_',
+			commonjs: 'underscore',
+			commonjs2: 'underscore',
+			amd: 'underscore'
+		},
 		'backbone.marionette': {
 			root: 'Marionette',
 			commonjs: 'backbone.marionette',
