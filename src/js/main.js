@@ -21,8 +21,6 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	initialize({View, DeleteView = DelView}) {
-		//console.info('init', this.options);
-
 		if (typeof View !== 'function') {
 			throw new Error('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
 		}
@@ -35,7 +33,7 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		this.View = View;
 		this.DeleteView = DeleteView;
 
-		_.bindAll(this, 'addHandlers', 'offStartInteract', 'interact', 'moveAt', 'stopInteract', 'offStopInteract', 'offInteract', 'endInteract', 'onDelete', 'onCancel', 'offTransitionend');
+		_.bindAll(this, 'addHandlers', 'interact', 'moveAt', 'stopInteract', 'offInteract', 'endInteract', 'onDelete', 'onCancel');
 	}
 
 	onRender() {
@@ -56,42 +54,27 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	addHandlers() {
-		console.info('addHandlers');
-
 		this.startInteract()
-				.done(this.offStartInteract)
 				.done(this.interact)
 			.then(this.stopInteract)
-				.always(this.offStopInteract)
 				.always(this.offInteract)
 			.then(this.endInteract)
 				.fail(this.addHandlers);
 	}
 
 	startInteract() {
-		console.info('startInteract');
-
 		var dfd = new $.Deferred();
 
 		this.onInteract = (e) => {
-			console.info('startInteract resolve');
 			this.state.set({startX: e.pageX});
 			dfd.resolve();
 		};
-		this.$('.js-content > *').on('mousedown', this.onInteract);
+		this.$('.js-content > *').one('mousedown', this.onInteract);
 
 		return dfd;
 	}
 
-	offStartInteract() {
-		console.info('offStartInteract');
-
-		this.$('.js-content > *').off('mousedown', this.onInteract);
-	}
-
 	interact() {
-		console.info('interact');
-
 		$(document).on('mousemove', this.moveAt);
 	}
 
@@ -102,58 +85,34 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	offInteract() {
-		console.info('offInteract');
-
 		$(document).off('mousemove', this.moveAt);
 	}
 
 	stopInteract() {
-		console.info('stopInteract');
-
 		var dfd = new $.Deferred();
 
-		this.onStopInteract = (e) => {
-			console.info('stopInteract resolve');
+		this.onStopInteract = (e) => this.state.get('startX') === e.pageX ? dfd.reject(e) : dfd.resolve(e);
 
-			if (this.state.get('startX') === e.pageX) {
-				dfd.reject(e);
-			}
-
-			dfd.resolve(e);
-		};
-
-		this.$('.js-content > *').on('mouseup', this.onStopInteract);
-		this.$('.js-content > *').on('mouseleave', this.onStopInteract);
+		this.$('.js-content > *').one('mouseup', this.onStopInteract);
+		this.$('.js-content > *').one('mouseleave', this.onStopInteract);
 
 		return dfd;
 	}
 
-	offStopInteract() {
-		console.info('offStopInteract');
-
-		this.$('.js-content > *').off('mouseup', this.onStopInteract);
-		this.$('.js-content > *').off('mouseleave', this.onStopInteract);
-	}
-
 	endInteract(event) {
-		console.info('endInteract');
-
 		var dfd = new $.Deferred();
 		var target = $(event.currentTarget);
 		var swipePercent = this.getSwipePercent();
 
 		dfd
 			.done(this.onDelete)
-			.fail(this.onCancel)
-			.always(this.offTransitionend);
+			.fail(this.onCancel);
 
 		if (this.state.isDelete(swipePercent)) {
-			this.onTransitionend = (e) => dfd.resolve(e);
-			target.on('transitionend', this.onTransitionend);
+			target.one('transitionend', (e) => dfd.resolve(e));
 			swipePercent < 0 ? target.addClass('js-transition-delete-left') : target.addClass('js-transition-delete-right');
 		} else {
-			this.onTransitionend = (e) => dfd.reject(e);
-			target.on('transitionend', this.onTransitionend);
+			target.one('transitionend', (e) => dfd.reject(e));
 			target.addClass('js-transition-cancel');
 		}
 
@@ -168,23 +127,14 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	onDelete() {
-		console.info('onDelete');
-
 		this.model.destroy({wait: true});
 	}
 
 	onCancel(e) {
-		console.info('onCancel');
-
 		var target = $(e.currentTarget);
 		target.removeClass('js-transition-cancel');
 		target.css({left: 0});
 
 		this.state.set({startX: 0});
-	}
-
-	offTransitionend(e) {
-		var target = $(e.currentTarget);
-		target.off('transitionend', this.onTransitionend);
 	}
 }
