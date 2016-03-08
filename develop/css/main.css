@@ -15,6 +15,10 @@
 .swipe-to-delete .js-content {
 	position: relative !important;
 	z-index: 2 !important;
+
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
 }
 
 .swipe-to-delete .js-transition-delete-right {
@@ -32,7 +36,6 @@
 	transition-property: left !important;
 	transition-duration: 1s;
 }
-
 
 /* Custom styles */
 .swipe-to-delete .js-delete {
