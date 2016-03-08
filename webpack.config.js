@@ -28,6 +28,12 @@ let config = {
 			commonjs2: 'underscore',
 			amd: 'underscore'
 		},
+		'backbone': {
+			root: 'Backbone',
+			commonjs: 'backbone',
+			commonjs2: 'backbone',
+			amd: 'backbone'
+		},
 		'backbone.marionette': {
 			root: 'Marionette',
 			commonjs: 'backbone.marionette',

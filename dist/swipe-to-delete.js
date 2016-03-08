@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("backbone.marionette"), require("underscore"));
+		module.exports = factory(require("underscore"), require("backbone"), require("backbone.marionette"));
 	else if(typeof define === 'function' && define.amd)
-		define(["backbone.marionette", "underscore"], factory);
+		define(["underscore", "backbone", "backbone.marionette"], factory);
 	else if(typeof exports === 'object')
-		exports["SwipeToDelete"] = factory(require("backbone.marionette"), require("underscore"));
+		exports["SwipeToDeleteView"] = factory(require("underscore"), require("backbone"), require("backbone.marionette"));
 	else
-		root["SwipeToDelete"] = factory(root["Marionette"], root["_"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__) {
+		root["SwipeToDeleteView"] = factory(root["_"], root["Backbone"], root["Marionette"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -62,15 +62,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _backbone = __webpack_require__(1);
-
-	var _backbone2 = _interopRequireDefault(_backbone);
-
-	var _underscore = __webpack_require__(2);
+	var _underscore = __webpack_require__(1);
 
 	var _underscore2 = _interopRequireDefault(_underscore);
 
-	var _delete = __webpack_require__(3);
+	var _backbone = __webpack_require__(2);
+
+	var _backbone2 = _interopRequireDefault(_backbone);
+
+	var _backbone3 = __webpack_require__(3);
+
+	var _backbone4 = _interopRequireDefault(_backbone3);
+
+	var _delete = __webpack_require__(4);
 
 	var _delete2 = _interopRequireDefault(_delete);
 
@@ -82,16 +86,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var SwipeDeleteView = function (_Marionette$LayoutVie) {
-		_inherits(SwipeDeleteView, _Marionette$LayoutVie);
+	var SwipeToDeleteView = function (_Marionette$LayoutVie) {
+		_inherits(SwipeToDeleteView, _Marionette$LayoutVie);
 
-		function SwipeDeleteView() {
-			_classCallCheck(this, SwipeDeleteView);
+		function SwipeToDeleteView() {
+			_classCallCheck(this, SwipeToDeleteView);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(SwipeDeleteView).apply(this, arguments));
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(SwipeToDeleteView).apply(this, arguments));
 		}
 
-		_createClass(SwipeDeleteView, [{
+		_createClass(SwipeToDeleteView, [{
 			key: 'template',
 			value: function template() {
 				return '\n\t\t\t<div class="js-delete"></div>\n\t\t\t<div class="js-content"></div>\n\t\t';
@@ -107,9 +111,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: 'events',
 			value: function events() {
+				//console.info('events', this.options);
+
 				return {
-					'mousedown': 'onStart',
-					'mouseup': 'onEnd'
+					'mousedown .js-content > *': 'onStart',
+					'mouseup .js-content > *': 'onEnd'
 				};
 			}
 		}, {
@@ -119,7 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				var _ref$DeleteView = _ref.DeleteView;
 				var DeleteView = _ref$DeleteView === undefined ? _delete2.default : _ref$DeleteView;
 
-				console.info('init', this.options);
+				//console.info('init', this.options);
 
 				if (typeof View !== 'function') {
 					throw new Error('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
@@ -128,41 +134,68 @@ return /******/ (function(modules) { // webpackBootstrap
 				if (typeof DeleteView !== 'function') {
 					throw new Error('"DeleteView" can be any Backbone.View or be derived from Marionette.ItemView.');
 				}
+
+				this.View = View;
+				this.DeleteView = DeleteView;
+
+				_underscore2.default.bindAll(this, 'onMove', 'onEnd');
 			}
 		}, {
 			key: 'onRender',
 			value: function onRender() {
+				this.$el.addClass('swipe-to-delete');
+				this.showDelete();
 				this.showContent();
+			}
+		}, {
+			key: 'showDelete',
+			value: function showDelete() {
+				var view = new this.DeleteView();
+				this.showChildView('delete', view);
 			}
 		}, {
 			key: 'showContent',
 			value: function showContent() {
-				var view = new this.options.View(_underscore2.default.omit(this.options, 'el', 'tagName', 'className', 'View', 'DeleteView'));
+				var view = new this.View(_underscore2.default.omit(this.options, 'el', 'tagName', 'className', 'View', 'DeleteView'));
 				this.showChildView('content', view);
 			}
 		}, {
 			key: 'onStart',
 			value: function onStart(e) {
-				console.info('onStart', e);
+				var target = e.currentTarget;
+				//console.info('onStart', target);
 				document.addEventListener('mousemove', this.onMove, false);
+				target.addEventListener('mouseleave', this.onEnd, false);
+
+				this.startX = e.pageX;
 			}
 		}, {
 			key: 'onMove',
 			value: function onMove(e) {
-				console.info('onMove', e);
+				//console.info('onMove', e, e.currentTarget);
+				this.moveAt(e);
 			}
 		}, {
 			key: 'onEnd',
 			value: function onEnd(e) {
-				console.info('onEnd', e);
+				var target = e.currentTarget;
+				//console.info('onEnd', this);
 				document.removeEventListener('mousemove', this.onMove, false);
+				target.removeEventListener('mouseleave', this.onEnd, false);
+			}
+		}, {
+			key: 'moveAt',
+			value: function moveAt(e) {
+				var target = this.getRegion('content').currentView.$el;
+				var res = e.pageX - this.startX;
+				target.css({ left: res });
 			}
 		}]);
 
-		return SwipeDeleteView;
-	}(_backbone2.default.LayoutView);
+		return SwipeToDeleteView;
+	}(_backbone4.default.LayoutView);
 
-	exports.default = SwipeDeleteView;
+	exports.default = SwipeToDeleteView;
 
 /***/ },
 /* 1 */
@@ -178,6 +211,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -188,7 +227,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _backbone = __webpack_require__(1);
+	var _backbone = __webpack_require__(3);
 
 	var _backbone2 = _interopRequireDefault(_backbone);
 
@@ -210,6 +249,11 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 
 		_createClass(DelView, [{
+			key: 'template',
+			value: function template() {
+				return '';
+			}
+		}, {
 			key: 'initialize',
 			value: function initialize(options) {
 				console.info('init DelView', options);
