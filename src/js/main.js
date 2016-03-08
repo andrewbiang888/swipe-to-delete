@@ -33,11 +33,9 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		this.View = View;
 		this.DeleteView = DeleteView;
 
-		_.bindAll(this, 'onEnd', 'onDelete', 'onCancel', 'interact', 'moveAt', 'addStopInteract', 'offInteract', 'offMove', 'offStopInteract', 'addHandlers');
+		_.bindAll(this, 'addHandlers', 'offStartInteract', 'interact', 'moveAt', 'stopInteract', 'offStopInteract', 'offInteract', 'endInteract', 'onDelete', 'onCancel', 'offTransitionend');
 
-		this.state = new Backbone.Model({
-			startX: 0
-		});
+		this.state = new Backbone.Model({startX: 0});
 	}
 
 	onRender() {
@@ -60,26 +58,23 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	addHandlers() {
 		console.info('addHandlers');
 
-		this.addInteract()
-				.done(this.offInteract)
+		this.startInteract()
+				.done(this.offStartInteract)
 				.done(this.interact)
-			.then(this.addStopInteract)
-				.done(this.offStopInteract)
-				.done(this.offMove)
-			.then(this.onEnd)
-				.done(this.onDelete)
-				.fail(this.onCancel)
-				.fail(this.addHandlers)
-				.always(this.offTransitionend);
+			.then(this.stopInteract)
+				.always(this.offStopInteract)
+				.always(this.offInteract)
+			.then(this.endInteract)
+				.fail(this.addHandlers);
 	}
 
-	addInteract() {
-		//console.info('addInteract');
+	startInteract() {
+		console.info('startInteract');
 
 		var dfd = new $.Deferred();
 
 		this.onInteract = (e) => {
-			console.info('addInteract resolve');
+			console.info('startInteract resolve');
 			this.state.set({startX: e.pageX});
 			dfd.resolve();
 		};
@@ -88,13 +83,15 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		return dfd;
 	}
 
-	offInteract() {
-		//console.info('offInteract');
+	offStartInteract() {
+		console.info('offStartInteract');
+
 		this.$('.js-content > *').off('mousedown', this.onInteract);
 	}
 
 	interact() {
 		console.info('interact');
+
 		$(document).on('mousemove', this.moveAt);
 	}
 
@@ -104,18 +101,24 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		target.css({left: res});
 	}
 
-	offMove() {
-		//console.info('offMove');
+	offInteract() {
+		console.info('offInteract');
+
 		$(document).off('mousemove', this.moveAt);
 	}
 
-	addStopInteract() {
-		//console.info('addStopInteract');
+	stopInteract() {
+		console.info('stopInteract');
 
 		var dfd = new $.Deferred();
 
 		this.onStopInteract = (e) => {
-			console.info('addStopInteract resolve');
+			console.info('stopInteract resolve');
+
+			if (this.state.get('startX') === e.pageX) {
+				dfd.reject(e);
+			}
+
 			dfd.resolve(e);
 		};
 
@@ -126,30 +129,39 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	offStopInteract() {
-		//console.info('offStopInteract');
+		console.info('offStopInteract');
 
 		this.$('.js-content > *').off('mouseup', this.onStopInteract);
 		this.$('.js-content > *').off('mouseleave', this.onStopInteract);
 	}
 
-	onEnd(event) {
-		console.info('onEnd');
+	endInteract(event) {
+		console.info('endInteract');
+
 		var dfd = new $.Deferred();
 		var target = $(event.currentTarget);
 		var swipePercent = this.getSwipePercent();
 
+		dfd
+			.done(this.onDelete)
+			.fail(this.onCancel)
+			.always(this.offTransitionend);
+
 		if (this.isDelete(swipePercent)) {
-			swipePercent < 0 ? target.addClass('js-transition-delete-left') : target.addClass('js-transition-delete-right');
 			this.onTransitionend = (e) => {
 				dfd.resolve(e);
 			};
 			target.on('transitionend', this.onTransitionend);
+
+			swipePercent < 0 ? target.addClass('js-transition-delete-left') : target.addClass('js-transition-delete-right');
 		} else {
-			target.addClass('js-transition-cancel');
 			this.onTransitionend = (e) => {
+				console.info('onTransitionend');
 				dfd.reject(e);
 			};
 			target.on('transitionend', this.onTransitionend);
+
+			target.addClass('js-transition-cancel');
 		}
 
 		return dfd;
@@ -168,6 +180,7 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 
 	onDelete() {
 		console.info('onDelete');
+
 		this.model.destroy({wait: true});
 	}
 
