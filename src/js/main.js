@@ -3,6 +3,7 @@ import _ from 'underscore';
 import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import DelView from './delete';
+import State from './model';
 
 export default class SwipeToDeleteView extends Marionette.LayoutView {
 	template() {
@@ -30,12 +31,11 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 			throw new Error('"DeleteView" can be any Backbone.View or be derived from Marionette.ItemView.');
 		}
 
+		this.state = new State();
 		this.View = View;
 		this.DeleteView = DeleteView;
 
 		_.bindAll(this, 'addHandlers', 'offStartInteract', 'interact', 'moveAt', 'stopInteract', 'offStopInteract', 'offInteract', 'endInteract', 'onDelete', 'onCancel', 'offTransitionend');
-
-		this.state = new Backbone.Model({startX: 0});
 	}
 
 	onRender() {
@@ -147,35 +147,24 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 			.fail(this.onCancel)
 			.always(this.offTransitionend);
 
-		if (this.isDelete(swipePercent)) {
-			this.onTransitionend = (e) => {
-				dfd.resolve(e);
-			};
+		if (this.state.isDelete(swipePercent)) {
+			this.onTransitionend = (e) => dfd.resolve(e);
 			target.on('transitionend', this.onTransitionend);
-
 			swipePercent < 0 ? target.addClass('js-transition-delete-left') : target.addClass('js-transition-delete-right');
 		} else {
-			this.onTransitionend = (e) => {
-				console.info('onTransitionend');
-				dfd.reject(e);
-			};
+			this.onTransitionend = (e) => dfd.reject(e);
 			target.on('transitionend', this.onTransitionend);
-
 			target.addClass('js-transition-cancel');
 		}
 
 		return dfd;
 	}
 
-	isDelete(percent) {
-		return ((percent > 0 && percent >= .5) || (percent < 0 && percent <= -.5));
-	}
-
 	getSwipePercent() {
 		var shift = this.getRegion('content').currentView.$el.position().left;
 		var width = this.getRegion('content').$el.innerWidth();
 
-		return shift / width;
+		return this.state.calcSwipePercent({shift, width});
 	}
 
 	onDelete() {
