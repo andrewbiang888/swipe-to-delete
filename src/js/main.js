@@ -4,8 +4,13 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import DelView from './delete';
 import State from './model';
+import '../css/main.scss';
 
 export default class SwipeToDeleteView extends Marionette.LayoutView {
+	className() {
+		return 'swipe-to-delete';
+	}
+
 	template() {
 		return `
 			<div class="js-delete"></div>
@@ -37,7 +42,6 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	onRender() {
-		this.$el.addClass('swipe-to-delete');
 		this.showDelete();
 		this.showContent();
 		this.addHandlers();

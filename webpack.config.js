@@ -1,7 +1,8 @@
 'use strict';
 
-const path = require('path');
-const webpack = require('webpack');
+let path = require('path');
+let webpack = require('webpack');
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ENV = process.env.NODE_ENV || 'build';
 
 let config = {
@@ -48,9 +49,17 @@ let config = {
 				test: /\.js$/,
 				exclude: /node_modules/,
 				loader: 'babel-loader'
+			},
+			{
+				test: /\.scss$/,
+				loader: ExtractTextPlugin.extract('style', 'css!sass')
 			}
 		]
-	}
+	},
+
+	plugins: [
+		new ExtractTextPlugin('main.css')
+	]
 };
 
 if (ENV === 'develop') {
