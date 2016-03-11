@@ -1,49 +1,62 @@
-/* Required styles */
 .swipe-to-delete {
+	/* Required styles */
 	position: relative !important;
 	padding: 0 !important;
 	overflow: hidden !important;
-}
-.swipe-to-delete .js-delete {
-	position: absolute !important;
-	top: 0 !important;
-	right: 0 !important;
-	bottom: 0 !important;
-	left: 0 !important;
-	z-index: 1 !important;
-}
-.swipe-to-delete .js-content {
-	position: relative !important;
-	z-index: 2 !important;
 
-	-webkit-user-select: none !important;
-	-moz-user-select: none !important;
-	-ms-user-select: none !important;
-}
+	.js-delete {
+		position: absolute !important;
+		top: 0 !important;
+		right: 0 !important;
+		bottom: 0 !important;
+		left: 0 !important;
+		z-index: 1 !important;
+	}
+	.js-content {
+		position: relative !important;
+		z-index: 2 !important;
 
-.swipe-to-delete .js-transition-delete-right {
-	left: 100% !important;
-	transition-property: left !important;
-	transition-duration: 1s;
-}
-.swipe-to-delete .js-transition-delete-left {
-	left: -100% !important;
-	transition-property: left !important;
-	transition-duration: 1s;
-}
-.swipe-to-delete .js-transition-cancel {
-	left: 0 !important;
-	transition-property: left !important;
-	transition-duration: 1s;
-}
+		-webkit-user-select: none !important;
+		-moz-user-select: none !important;
+		-ms-user-select: none !important;
+	}
 
-/* Custom styles */
-.swipe-to-delete .js-delete {
-	background: red;
-	padding: 10px 15px;
-}
-.swipe-to-delete .js-content {
-}
-.swipe-to-delete .js-content .list-group-item:last-child {
-	border-width: 1px 0;
+	.js-transition-delete-right {
+		left: 100% !important;
+		transition-property: left !important;
+		transition-duration: 1s;
+	}
+	.js-transition-delete-left {
+		left: -100% !important;
+		transition-property: left !important;
+		transition-duration: 1s;
+	}
+	.js-transition-cancel {
+		left: 0 !important;
+		transition-property: left !important;
+		transition-duration: 1s;
+	}
+
+	/* Custom styles */
+	.js-delete {
+		background: #ff5f58;
+
+		$horiz-padding: 17px;
+		svg {
+			position: absolute;
+			left: $horiz-padding;
+			top: 50%;
+			margin-top: -13px;
+			width: 25px;
+			height: 25px;
+		}
+		svg:first-child {
+			left: auto;
+			right: $horiz-padding;
+		}
+	}
+
+	.js-content {
+		cursor: pointer;
+	}
 }
