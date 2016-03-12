@@ -23,6 +23,12 @@ let config = {
 	},
 
 	externals: {
+		'jquery': {
+			root: '$',
+			commonjs: 'jquery',
+			commonjs2: 'jquery',
+			amd: 'jquery'
+		},
 		'underscore': {
 			root: '_',
 			commonjs: 'underscore',
