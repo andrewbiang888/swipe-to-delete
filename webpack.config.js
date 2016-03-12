@@ -64,7 +64,7 @@ let config = {
 	},
 
 	plugins: [
-		new ExtractTextPlugin('main.css')
+		new ExtractTextPlugin('swipe-to-delete.css')
 	]
 };
 
