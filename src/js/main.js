@@ -25,7 +25,13 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		};
 	}
 
-	initialize({View, DeleteView = DelView}) {
+	initialize({View, DeleteView = DelView, deleteSwipe}) {
+		this.state = new State({deleteSwipe});
+
+		if (!this.state.isValid()) {
+			throw new Error(_.reduce(this.state.validationError, (memo, error) => `${memo}${error.message} `, ''));
+		}
+
 		if (typeof View !== 'function') {
 			throw new Error('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
 		}
@@ -34,7 +40,6 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 			throw new Error('"DeleteView" can be any Backbone.View or be derived from Marionette.ItemView.');
 		}
 
-		this.state = new State();
 		this.View = View;
 		this.DeleteView = DeleteView;
 
