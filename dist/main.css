@@ -58,7 +58,7 @@
 	right: 17px;
 }
 
-.swipe-to-delete .js-content {
+.swipe-to-delete .js-content :first-child {
 	cursor: pointer;
 }
 

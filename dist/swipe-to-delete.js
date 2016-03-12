@@ -258,7 +258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: 'onDelete',
 			value: function onDelete() {
-				this.model.destroy({ wait: true });
+				this.getRegion('content').currentView.triggerMethod('swipe:delete');
 			}
 		}, {
 			key: 'onCancel',
@@ -268,6 +268,8 @@ return /******/ (function(modules) { // webpackBootstrap
 				target.css({ left: 0 });
 
 				this.state.set({ startX: 0 });
+
+				this.getRegion('content').currentView.triggerMethod('swipe:cancel');
 			}
 		}]);
 
