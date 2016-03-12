@@ -136,7 +136,7 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	onDelete() {
-		this.model.destroy({wait: true});
+		this.getRegion('content').currentView.triggerMethod('swipe:delete');
 	}
 
 	onCancel(e) {
@@ -145,5 +145,7 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		target.css({left: 0});
 
 		this.state.set({startX: 0});
+
+		this.getRegion('content').currentView.triggerMethod('swipe:cancel');
 	}
 }

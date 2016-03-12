@@ -16,6 +16,12 @@ var MessageView = Backbone.Marionette.ItemView.extend({
 			<h4 class="list-group-item-heading"><%= date %></h4>\
 			<p class="list-group-item-text"><%= text %></p>\
 			'),
+	onSwipeDelete: function () {
+		this.model.destroy({wait: true});
+	}
+	//onSwipeCancel: function () {
+	//	console.info('onSwipeCancel');
+	//}
 });
 
 var MessagesView = Backbone.Marionette.CollectionView.extend({
