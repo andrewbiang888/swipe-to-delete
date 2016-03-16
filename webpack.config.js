@@ -64,7 +64,10 @@ let config = {
 	},
 
 	plugins: [
-		new ExtractTextPlugin('swipe-to-delete.css')
+		new ExtractTextPlugin('swipe-to-delete.css'),
+		//new webpack.optimize.UglifyJsPlugin({
+		//	exclude: /\.css$/
+		//})
 	]
 };
 
@@ -74,10 +77,13 @@ if (ENV === 'develop') {
 		devServer: {
 			host: 'localhost',
 			port: 8080,
-			contentBase: path.resolve(__dirname, 'develop'),
+			contentBase: path.resolve(__dirname, 'example'),
 			inline: true,
 			hot: false
-		}
+		},
+		//plugins: [
+		//	new ExtractTextPlugin('swipe-to-delete.css')
+		//]
 	});
 }
 
