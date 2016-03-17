@@ -73,37 +73,50 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 
 	startInteract() {
 		var dfd = new $.Deferred();
+		var el = this.$('.js-content > *');
 
 		this.onInteract = (e) => {
-			this.state.set({startX: e.pageX});
+			var x = e.type === 'mousedown' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+			this.state.set({startX: x});
 			dfd.resolve();
 		};
-		this.$('.js-content > *').one('mousedown', this.onInteract);
+
+		el.one('mousedown', this.onInteract);
+		el.one('touchstart', this.onInteract);
 
 		return dfd;
 	}
 
 	interact() {
 		$(document).on('mousemove', this.moveAt);
+		$(document).on('touchmove', this.moveAt);
 	}
 
 	moveAt(e) {
 		var target = this.getRegion('content').currentView.$el;
-		var res = e.pageX - this.state.get('startX');
+		var x = e.type === 'mousemove' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+		var res = x - this.state.get('startX');
+
 		target.css({left: res});
 	}
 
 	offInteract() {
 		$(document).off('mousemove', this.moveAt);
+		$(document).off('touchmove', this.moveAt);
 	}
 
 	stopInteract() {
 		var dfd = new $.Deferred();
+		var el = this.$('.js-content > *');
 
-		this.onStopInteract = (e) => this.state.get('startX') === e.pageX ? dfd.reject(e) : dfd.resolve(e);
+		this.onStopInteract = (e) => {
+			var x = e.type === 'touchend' ? e.originalEvent.changedTouches[0].pageX : e.pageX;
+			this.state.get('startX') === x ? dfd.reject(e) : dfd.resolve(e);
+		};
 
-		this.$('.js-content > *').one('mouseup', this.onStopInteract);
-		this.$('.js-content > *').one('mouseleave', this.onStopInteract);
+		el.one('mouseup', this.onStopInteract);
+		el.one('touchend', this.onStopInteract);
+		el.one('mouseleave', this.onStopInteract);
 
 		return dfd;
 	}
