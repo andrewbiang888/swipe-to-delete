@@ -182,12 +182,16 @@ return /******/ (function(modules) { // webpackBootstrap
 				var _this2 = this;
 
 				var dfd = new _jquery2.default.Deferred();
+				var el = this.$('.js-content > *');
 
 				this.onInteract = function (e) {
-					_this2.state.set({ startX: e.pageX });
+					var x = e.type === 'mousedown' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+					_this2.state.set({ startX: x });
 					dfd.resolve();
 				};
-				this.$('.js-content > *').one('mousedown', this.onInteract);
+
+				el.one('mousedown', this.onInteract);
+				el.one('touchstart', this.onInteract);
 
 				return dfd;
 			}
@@ -195,18 +199,22 @@ return /******/ (function(modules) { // webpackBootstrap
 			key: 'interact',
 			value: function interact() {
 				(0, _jquery2.default)(document).on('mousemove', this.moveAt);
+				(0, _jquery2.default)(document).on('touchmove', this.moveAt);
 			}
 		}, {
 			key: 'moveAt',
 			value: function moveAt(e) {
 				var target = this.getRegion('content').currentView.$el;
-				var res = e.pageX - this.state.get('startX');
+				var x = e.type === 'mousemove' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+				var res = x - this.state.get('startX');
+
 				target.css({ left: res });
 			}
 		}, {
 			key: 'offInteract',
 			value: function offInteract() {
 				(0, _jquery2.default)(document).off('mousemove', this.moveAt);
+				(0, _jquery2.default)(document).off('touchmove', this.moveAt);
 			}
 		}, {
 			key: 'stopInteract',
@@ -214,13 +222,16 @@ return /******/ (function(modules) { // webpackBootstrap
 				var _this3 = this;
 
 				var dfd = new _jquery2.default.Deferred();
+				var el = this.$('.js-content > *');
 
 				this.onStopInteract = function (e) {
-					return _this3.state.get('startX') === e.pageX ? dfd.reject(e) : dfd.resolve(e);
+					var x = e.type === 'touchend' ? e.originalEvent.changedTouches[0].pageX : e.pageX;
+					_this3.state.get('startX') === x ? dfd.reject(e) : dfd.resolve(e);
 				};
 
-				this.$('.js-content > *').one('mouseup', this.onStopInteract);
-				this.$('.js-content > *').one('mouseleave', this.onStopInteract);
+				el.one('mouseup', this.onStopInteract);
+				el.one('touchend', this.onStopInteract);
+				el.one('mouseleave', this.onStopInteract);
 
 				return dfd;
 			}
