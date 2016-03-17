@@ -4,6 +4,7 @@ import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import DelView from './delete';
 import State from './model';
+import isMobile from './utils/isMobile';
 import '../css/main.scss';
 
 export default class SwipeToDeleteView extends Marionette.LayoutView {
@@ -26,6 +27,7 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 	}
 
 	initialize({View, DeleteView = DelView, deleteSwipe}) {
+		this.isTouch = isMobile.any();
 		this.state = new State({deleteSwipe});
 
 		if (!this.state.isValid()) {
@@ -76,33 +78,30 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		var el = this.$('.js-content > *');
 
 		this.onInteract = (e) => {
-			var x = e.type === 'mousedown' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+			var x = this.isTouch ? e.originalEvent.targetTouches[0].pageX: e.pageX;
 			this.state.set({startX: x});
 			dfd.resolve();
 		};
 
-		el.one('mousedown', this.onInteract);
-		el.one('touchstart', this.onInteract);
+		el.one(this.isTouch ? 'touchstart' : 'mousedown', this.onInteract);
 
 		return dfd;
 	}
 
 	interact() {
-		$(document).on('mousemove', this.moveAt);
-		$(document).on('touchmove', this.moveAt);
+		$(document).on(this.isTouch ? 'touchmove' : 'mousemove', this.moveAt);
 	}
 
 	moveAt(e) {
 		var target = this.getRegion('content').currentView.$el;
-		var x = e.type === 'mousemove' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+		var x = this.isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
 		var res = x - this.state.get('startX');
 
 		target.css({left: res});
 	}
 
 	offInteract() {
-		$(document).off('mousemove', this.moveAt);
-		$(document).off('touchmove', this.moveAt);
+		$(document).off(this.isTouch ? 'touchmove' : 'mousemove', this.moveAt);
 	}
 
 	stopInteract() {
@@ -110,13 +109,19 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		var el = this.$('.js-content > *');
 
 		this.onStopInteract = (e) => {
-			var x = e.type === 'touchend' ? e.originalEvent.changedTouches[0].pageX : e.pageX;
-			this.state.get('startX') === x ? dfd.reject(e) : dfd.resolve(e);
+			el.off('mouseup', this.onStopInteract);
+			el.off('mouseleave', this.onStopInteract);
+
+			var shift = $(e.currentTarget).position().left;
+			!shift ? dfd.reject(e) : dfd.resolve(e);
 		};
 
-		el.one('mouseup', this.onStopInteract);
-		el.one('touchend', this.onStopInteract);
-		el.one('mouseleave', this.onStopInteract);
+		if (this.isTouch) {
+			el.one('touchend', this.onStopInteract);
+		} else {
+			el.one('mouseup', this.onStopInteract);
+			el.one('mouseleave', this.onStopInteract);
+		}
 
 		return dfd;
 	}

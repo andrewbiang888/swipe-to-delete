@@ -86,7 +86,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _model2 = _interopRequireDefault(_model);
 
-	__webpack_require__(7);
+	var _isMobile = __webpack_require__(7);
+
+	var _isMobile2 = _interopRequireDefault(_isMobile);
+
+	__webpack_require__(8);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -131,6 +135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				var DeleteView = _ref$DeleteView === undefined ? _delete2.default : _ref$DeleteView;
 				var deleteSwipe = _ref.deleteSwipe;
 
+				this.isTouch = _isMobile2.default.any();
 				this.state = new _model2.default({ deleteSwipe: deleteSwipe });
 
 				if (!this.state.isValid()) {
@@ -185,27 +190,25 @@ return /******/ (function(modules) { // webpackBootstrap
 				var el = this.$('.js-content > *');
 
 				this.onInteract = function (e) {
-					var x = e.type === 'mousedown' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+					var x = _this2.isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
 					_this2.state.set({ startX: x });
 					dfd.resolve();
 				};
 
-				el.one('mousedown', this.onInteract);
-				el.one('touchstart', this.onInteract);
+				el.one(this.isTouch ? 'touchstart' : 'mousedown', this.onInteract);
 
 				return dfd;
 			}
 		}, {
 			key: 'interact',
 			value: function interact() {
-				(0, _jquery2.default)(document).on('mousemove', this.moveAt);
-				(0, _jquery2.default)(document).on('touchmove', this.moveAt);
+				(0, _jquery2.default)(document).on(this.isTouch ? 'touchmove' : 'mousemove', this.moveAt);
 			}
 		}, {
 			key: 'moveAt',
 			value: function moveAt(e) {
 				var target = this.getRegion('content').currentView.$el;
-				var x = e.type === 'mousemove' ? e.pageX : e.originalEvent.targetTouches[0].pageX;
+				var x = this.isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
 				var res = x - this.state.get('startX');
 
 				target.css({ left: res });
@@ -213,8 +216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: 'offInteract',
 			value: function offInteract() {
-				(0, _jquery2.default)(document).off('mousemove', this.moveAt);
-				(0, _jquery2.default)(document).off('touchmove', this.moveAt);
+				(0, _jquery2.default)(document).off(this.isTouch ? 'touchmove' : 'mousemove', this.moveAt);
 			}
 		}, {
 			key: 'stopInteract',
@@ -225,13 +227,19 @@ return /******/ (function(modules) { // webpackBootstrap
 				var el = this.$('.js-content > *');
 
 				this.onStopInteract = function (e) {
-					var x = e.type === 'touchend' ? e.originalEvent.changedTouches[0].pageX : e.pageX;
-					_this3.state.get('startX') === x ? dfd.reject(e) : dfd.resolve(e);
+					el.off('mouseup', _this3.onStopInteract);
+					el.off('mouseleave', _this3.onStopInteract);
+
+					var shift = (0, _jquery2.default)(e.currentTarget).position().left;
+					!shift ? dfd.reject(e) : dfd.resolve(e);
 				};
 
-				el.one('mouseup', this.onStopInteract);
-				el.one('touchend', this.onStopInteract);
-				el.one('mouseleave', this.onStopInteract);
+				if (this.isTouch) {
+					el.one('touchend', this.onStopInteract);
+				} else {
+					el.one('mouseup', this.onStopInteract);
+					el.one('mouseleave', this.onStopInteract);
+				}
 
 				return dfd;
 			}
@@ -449,6 +457,38 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var isMobile = {
+		Android: function Android() {
+			return navigator.userAgent.match(/Android/i);
+		},
+		BlackBerry: function BlackBerry() {
+			return navigator.userAgent.match(/BlackBerry/i);
+		},
+		iOS: function iOS() {
+			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+		},
+		Opera: function Opera() {
+			return navigator.userAgent.match(/Opera Mini/i);
+		},
+		Windows: function Windows() {
+			return navigator.userAgent.match(/IEMobile/i);
+		},
+		any: function any() {
+			return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
+		}
+	};
+
+	exports.default = isMobile;
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
