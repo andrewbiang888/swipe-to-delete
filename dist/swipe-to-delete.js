@@ -1,3 +1,11 @@
+/*!
+ * Swipe-to-delete v0.1.0
+ * Implement the "swipe to delete" UI-pattern in the Marionette framework.
+ * https://github.com/gaer87/swipe-to-delete
+
+ * Copyright 2016, Fedotov Alexander
+ * Released under the MIT license.
+ */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("jquery"), require("underscore"), require("backbone"), require("backbone.marionette"));
@@ -7,7 +15,7 @@
 		exports["SwipeToDeleteView"] = factory(require("jquery"), require("underscore"), require("backbone"), require("backbone.marionette"));
 	else
 		root["SwipeToDeleteView"] = factory(root["$"], root["_"], root["Backbone"], root["Marionette"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -54,6 +62,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(1);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -62,35 +77,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _jquery = __webpack_require__(1);
+	var _jquery = __webpack_require__(2);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _underscore = __webpack_require__(2);
+	var _underscore = __webpack_require__(3);
 
 	var _underscore2 = _interopRequireDefault(_underscore);
 
-	var _backbone = __webpack_require__(3);
+	var _backbone = __webpack_require__(4);
 
 	var _backbone2 = _interopRequireDefault(_backbone);
 
-	var _backbone3 = __webpack_require__(4);
+	var _backbone3 = __webpack_require__(5);
 
 	var _backbone4 = _interopRequireDefault(_backbone3);
 
-	var _delete = __webpack_require__(5);
+	var _delete = __webpack_require__(6);
 
 	var _delete2 = _interopRequireDefault(_delete);
 
-	var _model = __webpack_require__(6);
+	var _model = __webpack_require__(7);
 
 	var _model2 = _interopRequireDefault(_model);
 
-	var _isMobile = __webpack_require__(7);
+	var _isMobile = __webpack_require__(8);
 
 	var _isMobile2 = _interopRequireDefault(_isMobile);
 
-	__webpack_require__(8);
+	__webpack_require__(9);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -298,12 +313,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SwipeToDeleteView;
 
 /***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
-
-/***/ },
 /* 2 */
 /***/ function(module, exports) {
 
@@ -323,6 +332,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -333,7 +348,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _backbone = __webpack_require__(4);
+	var _backbone = __webpack_require__(5);
 
 	var _backbone2 = _interopRequireDefault(_backbone);
 
@@ -369,7 +384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DelView;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -380,7 +395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _backbone = __webpack_require__(3);
+	var _backbone = __webpack_require__(4);
 
 	var _backbone2 = _interopRequireDefault(_backbone);
 
@@ -456,7 +471,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = State;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -488,7 +503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = isMobile;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

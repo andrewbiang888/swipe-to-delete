@@ -1,13 +1,11 @@
 'use strict';
 
 let path = require('path');
-let webpack = require('webpack');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ENV = process.env.NODE_ENV || 'build';
 
 let config = {
 	entry: {
-		SwipeToDeleteView: path.resolve(__dirname, 'src/js/main')
+		SwipeToDeleteView: [path.resolve(__dirname, 'src/js/main')]
 	},
 
 	output: {
@@ -64,27 +62,8 @@ let config = {
 	},
 
 	plugins: [
-		new ExtractTextPlugin('swipe-to-delete.css'),
-		//new webpack.optimize.UglifyJsPlugin({
-		//	exclude: /\.css$/
-		//})
+		new ExtractTextPlugin('swipe-to-delete.css')
 	]
 };
-
-if (ENV === 'develop') {
-	Object.assign(config, {
-		devtool: '#inline-source-map',
-		devServer: {
-			host: 'localhost',
-			port: 8080,
-			contentBase: path.resolve(__dirname, 'example'),
-			inline: true,
-			hot: false
-		},
-		//plugins: [
-		//	new ExtractTextPlugin('swipe-to-delete.css')
-		//]
-	});
-}
 
 module.exports = config;
