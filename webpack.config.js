@@ -56,7 +56,7 @@ let config = {
 			},
 			{
 				test: /\.scss$/,
-				loader: ExtractTextPlugin.extract('style', 'css!sass')
+				loader: ExtractTextPlugin.extract('style', 'css!sass?indentType=tab&indentWidth=1')
 			}
 		]
 	},

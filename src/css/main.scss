@@ -1,5 +1,5 @@
+/* Required styles */
 .swipe-to-delete {
-	/* Required styles */
 	position: relative !important;
 	padding: 0 !important;
 	overflow: hidden !important;
@@ -34,8 +34,10 @@
 	.js-transition-cancel {
 		left: 0 !important;
 	}
+}
 
-	/* Custom styles */
+/* Custom styles */
+.swipe-to-delete {
 	.js-delete {
 		background: #ff5f58;
 
