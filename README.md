@@ -42,3 +42,9 @@ onSwipeDelete: function () {
 
 ### Styles
 You may set up styles in "swipe-to-delete.css" under the comment "Custom styles". Classes "js-transition-delete-right" and "js-transition-delete-left" are added on a content view when it's swiped more than "deleteSwipe" options. Class "js-transition-cancel" is added when a content view swiped less than "deleteSwipe" options. Animations are made by CSS3 transition.
+
+## Contributing
+From opening a bug report to creating a pull request: every contribution is appreciated and welcome. If you're planing to implement a new feature or change the api please create an issue first.
+
+## License
+[MIT](http://www.opensource.org/licenses/mit-license.php)
