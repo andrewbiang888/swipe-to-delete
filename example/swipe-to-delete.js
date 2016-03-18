@@ -1,6 +1,6 @@
 /*!
- * Swipe-to-delete v0.1.0
- * Implement the "swipe to delete" UI-pattern in the Marionette framework.
+ * Swipe-to-delete v0.1.5
+ * Implement the 'swipe to delete' UI-pattern in the Marionette framework.
  * https://github.com/gaer87/swipe-to-delete
 
  * Copyright 2016, Fedotov Alexander
