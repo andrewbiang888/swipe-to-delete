@@ -20,24 +20,28 @@ var collectionView = Backbone.Marionette.CollectionView.extend({
 });
 ```
 
-- "childView" contains the swipe-to-delete Marionette view.
-- "childViewOptions" returns options for the swipe-to-delete view.
+- *childView* contains the swipe-to-delete Marionette view.
+- *childViewOptions* returns its options.
 
 ### Include lib
 It's available on *SwipeToDeleteView.default*.
 #### CommonJS
 ```
 var SwipeToDeleteView = require('swipe-to-delete');
+// SwipeToDeleteView.default
 ```
 #### AMD
 ```
 define(['swipe-to-delete'], function(SwipeToDeleteView) {
-
+	// SwipeToDeleteView.default
 });
 ```
 #### Global
 ```
 <script src="node_modules/swipe-to-delete/dist/swipe-to-delete.min.js"></script>
+<script>
+// SwipeToDeleteView.default
+</script>
 ```
 
 ### Options
@@ -56,7 +60,7 @@ onSwipeDelete: function () {
 - *swipe:cancel* - when a cancel animation is ended.
 
 ### Styles
-You may set up styles in "swipe-to-delete.css" under the comment "Custom styles". Classes "js-transition-delete-right" and "js-transition-delete-left" are added on a content view when it's swiped more than "deleteSwipe" options. Class "js-transition-cancel" is added when a content view swiped less than "deleteSwipe" options. Animations are made by CSS3 transition.
+You may set up styles in "swipe-to-delete.css" under the comment "Custom styles". Class _js-content_ is content region, _js-delete_ is delete region. Classes _js-transition-delete-right_ and _js-transition-delete-left_ are added on a content view when it's swiped more than "deleteSwipe" options. Class _js-transition-cancel_ is added when a content view swiped less than "deleteSwipe" options. Animations are made by CSS3 transition.
 
 ## Downloads
 Swipe-to-delete is available via [bower](http://bower.io) and [npm](https://www.npmjs.com/). Else you can download the latest builds directly from the "dist" folder above.
