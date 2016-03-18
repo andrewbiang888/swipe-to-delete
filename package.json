@@ -1,9 +1,9 @@
 {
   "name": "swipe-to-delete",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Implement the 'swipe to delete' UI-pattern in the Marionette framework.",
   "homepage": "https://github.com/gaer87/swipe-to-delete",
-  "main": "src/js/main.js",
+  "main": "dist/swipe-to-delete.min.js",
   "scripts": {
     "develop": "gulp",
     "build": "gulp build",
