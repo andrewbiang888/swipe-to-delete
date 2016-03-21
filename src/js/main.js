@@ -78,7 +78,7 @@ export default class SwipeToDeleteView extends Marionette.LayoutView {
 		var el = this.$('.js-content > *');
 
 		this.onInteract = (e) => {
-			var x = this.isTouch ? e.originalEvent.targetTouches[0].pageX: e.pageX;
+			var x = this.isTouch ? e.originalEvent.targetTouches[0].pageX : e.pageX;
 			this.state.set({startX: x});
 			dfd.resolve();
 		};
