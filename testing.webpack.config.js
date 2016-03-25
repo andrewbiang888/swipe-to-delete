@@ -1,7 +1,6 @@
 'use strict';
 
 let path = require('path');
-let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let config = {
 	resolve: {
@@ -18,14 +17,10 @@ let config = {
 			},
 			{
 				test: /\.scss$/,
-				loader: ExtractTextPlugin.extract('style', 'css!sass?indentType=tab&indentWidth=1')
+				loader: 'style!css!sass'
 			}
 		]
-	},
-
-	plugins: [
-		new ExtractTextPlugin('swipe-to-delete.css')
-	]
+	}
 };
 
 module.exports = config;
