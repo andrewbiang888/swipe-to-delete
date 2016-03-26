@@ -1,3 +1,6 @@
+### v0.1.6
+* Add tests.
+
 ### v0.1.5
 * Update banner.
 
