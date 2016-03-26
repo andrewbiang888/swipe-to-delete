@@ -6,21 +6,32 @@ import SwipeToDeleteView from '../src/js/main';
 import State from '../src/js/model';
 import DelView from '../src/js/delete';
 
+class View extends Marionette.ItemView {
+	template() {
+		return '<p>Test</p>';
+	}
+}
+
+let swipeToDeleteView;
+
+function renderView() {
+	let el = document.createElement('div');
+	document.body.appendChild(el);
+	swipeToDeleteView = new SwipeToDeleteView({View, el}).render();
+}
+
+function triggerAllSequenceEvents($el) {
+	$el.trigger('mousedown');
+	$(document).trigger('mousemove');
+	$el.trigger('mouseup');
+	$el.trigger('transitionend');
+}
+
 describe('The MainView', function () {
-	class View extends Marionette.ItemView {
-		template() {
-			return '<p>Test</p>';
-		}
-	}
-
-	let swipeToDeleteView;
-
-	function renderView() {
-		let cont = document.createElement('div');
-		document.body.appendChild(cont);
-		swipeToDeleteView = new SwipeToDeleteView({View, el: cont});
-		swipeToDeleteView.render();
-	}
+	afterEach(() => {
+		$(document).off();
+		swipeToDeleteView.destroy();
+	});
 
 	it('do an instance', () => {
 		swipeToDeleteView = new SwipeToDeleteView({View});
@@ -42,15 +53,9 @@ describe('The MainView', function () {
 
 	describe('initializing', () => {
 		it('accept options', () => {
-			expect(() => {
-				new SwipeToDeleteView()
-			}).toThrowError('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
-			expect(() => {
-				new SwipeToDeleteView({View: 'dummy'})
-			}).toThrowError('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
-			expect(() => {
-				new SwipeToDeleteView({View: View, DeleteView: 'dummy'})
-			}).toThrowError('"DeleteView" can be any Backbone.View or be derived from Marionette.ItemView.');
+			expect(() => new SwipeToDeleteView()).toThrowError('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
+			expect(() => new SwipeToDeleteView({View: 'dummy'})).toThrowError('"View" can be any Backbone.View or be derived from Marionette.ItemView.');
+			expect(() => new SwipeToDeleteView({View: View, DeleteView: 'dummy'})).toThrowError('"DeleteView" can be any Backbone.View or be derived from Marionette.ItemView.');
 		});
 
 		it('validate the "deleteSwipe" option', () => {
@@ -72,10 +77,6 @@ describe('The MainView', function () {
 	});
 
 	describe('when start to interact', () => {
-		afterEach(() => {
-			swipeToDeleteView.destroy();
-		});
-
 		it('should call "interact"', () => {
 			spyOn(SwipeToDeleteView.prototype, 'interact');
 			renderView();
@@ -103,21 +104,19 @@ describe('The MainView', function () {
 		});
 	});
 
-	describe('when interact', () => {
-		it('should move a view', () => {
-			spyOn(SwipeToDeleteView.prototype, 'moveAt');
-			renderView();
+	it('when interact should move a view', () => {
+		spyOn(SwipeToDeleteView.prototype, 'moveAt');
+		renderView();
 
-			let $el = swipeToDeleteView.$('.js-content > *');
+		let $el = swipeToDeleteView.$('.js-content > *');
 
-			$el.trigger('mousedown');
+		$el.trigger('mousedown');
 
-			expect(SwipeToDeleteView.prototype.moveAt).not.toHaveBeenCalled();
-			$(document).trigger('mousemove');
-			expect(SwipeToDeleteView.prototype.moveAt).toHaveBeenCalled();
+		expect(SwipeToDeleteView.prototype.moveAt).not.toHaveBeenCalled();
+		$(document).trigger('mousemove');
+		expect(SwipeToDeleteView.prototype.moveAt).toHaveBeenCalled();
 
-			$el.trigger('mouseup');
-		});
+		$el.trigger('mouseup');
 	});
 
 	describe('when stop interacting', () => {
@@ -147,6 +146,7 @@ describe('The MainView', function () {
 			expect(SwipeToDeleteView.prototype.offInteract).not.toHaveBeenCalled();
 			$el.trigger('mouseleave');
 			expect(SwipeToDeleteView.prototype.offInteract).toHaveBeenCalled();
+			$el.trigger('mouseup');
 		});
 
 		it('should call "endInteract"', () => {
@@ -196,12 +196,7 @@ describe('The MainView', function () {
 			spyOn(swipeToDeleteView, 'getSwipePercent').and.callFake(() => .7);
 			spyOn(swipeToDeleteView, 'onDelete');
 
-			let $el = swipeToDeleteView.$('.js-content > *');
-
-			$el.trigger('mousedown');
-			$(document).trigger('mousemove');
-			$el.trigger('mouseup');
-			$el.trigger('transitionend');
+			triggerAllSequenceEvents(swipeToDeleteView.$('.js-content > *'));
 
 			expect(swipeToDeleteView.onDelete).toHaveBeenCalled();
 		});
@@ -213,12 +208,7 @@ describe('The MainView', function () {
 			spyOn(swipeToDeleteView, 'getSwipePercent').and.callFake(() => .7);
 			spyOn(swipeToDeleteView.getRegion('content').currentView, 'onSwipeDelete');
 
-			let $el = swipeToDeleteView.$('.js-content > *');
-
-			$el.trigger('mousedown');
-			$(document).trigger('mousemove');
-			$el.trigger('mouseup');
-			$el.trigger('transitionend');
+			triggerAllSequenceEvents(swipeToDeleteView.$('.js-content > *'));
 
 			expect(swipeToDeleteView.getRegion('content').currentView.onSwipeDelete).toHaveBeenCalled();
 		});
@@ -243,12 +233,7 @@ describe('The MainView', function () {
 			spyOn(swipeToDeleteView, 'getSwipePercent').and.callFake(() => .1);
 			spyOn(swipeToDeleteView, 'onCancel');
 
-			let $el = swipeToDeleteView.$('.js-content > *');
-
-			$el.trigger('mousedown');
-			$(document).trigger('mousemove');
-			$el.trigger('mouseup');
-			$el.trigger('transitionend');
+			triggerAllSequenceEvents(swipeToDeleteView.$('.js-content > *'));
 
 			expect(swipeToDeleteView.onCancel).toHaveBeenCalled();
 		});
@@ -260,12 +245,7 @@ describe('The MainView', function () {
 			spyOn(swipeToDeleteView, 'getSwipePercent').and.callFake(() => .1);
 			spyOn(swipeToDeleteView.getRegion('content').currentView, 'onSwipeCancel');
 
-			let $el = swipeToDeleteView.$('.js-content > *');
-
-			$el.trigger('mousedown');
-			$(document).trigger('mousemove');
-			$el.trigger('mouseup');
-			$el.trigger('transitionend');
+			triggerAllSequenceEvents(swipeToDeleteView.$('.js-content > *'));
 
 			expect(swipeToDeleteView.getRegion('content').currentView.onSwipeCancel).toHaveBeenCalled();
 		});
@@ -275,11 +255,7 @@ describe('The MainView', function () {
 			spyOn(swipeToDeleteView, 'getSwipePercent').and.callFake(() => .1);
 
 			let $el = swipeToDeleteView.$('.js-content > *');
-
-			$el.trigger('mousedown');
-			$(document).trigger('mousemove');
-			$el.trigger('mouseup');
-			$el.trigger('transitionend');
+			triggerAllSequenceEvents($el);
 
 			expect($el.hasClass('js-transition-cancel')).toBe(false);
 		});
@@ -289,11 +265,7 @@ describe('The MainView', function () {
 			spyOn(swipeToDeleteView, 'getSwipePercent').and.callFake(() => .1);
 
 			let $el = swipeToDeleteView.$('.js-content > *');
-
-			$el.trigger('mousedown');
-			$(document).trigger('mousemove');
-			$el.trigger('mouseup');
-			$el.trigger('transitionend');
+			triggerAllSequenceEvents($el);
 
 			expect(swipeToDeleteView.state.get('startX')).toBe(0);
 		});
